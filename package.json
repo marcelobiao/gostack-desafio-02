@@ -1,0 +1,21 @@
+{
+  "name": "goStack-desafio01",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Marcelo Bião Cerqueira",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "dev:debug": "nodemon --inspect src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "sequelize": "^5.21.10",
+    "sqlite3": "^4.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4",
+    "sequelize-cli": "^5.5.1",
+    "sucrase": "^3.14.0"
+  }
+}

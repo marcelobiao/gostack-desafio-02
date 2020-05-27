@@ -16,6 +16,10 @@ routes.put('/users/:userId', UsersController.update);
 routes.delete('/users/:userId', UsersController.delete);
 
 routes.post('/session', SessionController.store);
+
+routes.use(AuthMiddleware);
+routes.get('/', AuthMiddleware, async (req, res) => {
+  res.json({success: true});
 });
 
 export default routes;

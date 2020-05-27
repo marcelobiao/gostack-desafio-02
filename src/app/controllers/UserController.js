@@ -84,7 +84,30 @@ class UserController{
   }
 
   async delete(req, res){
+    const schema = Yup.object().shape({
+      email: Yup.string().required().email(),
+      password: Yup.string().required().min(6),
+    });
 
+    if(!(await schema.isValid(req.body))){
+      return res.status(400).json({error: 'Validation fails'});
+    }
+
+    const user = await Users.findByPk(req.params.userId);
+
+    if(!user){
+      return res.status(401).json({error: 'User not found'})
+    }
+
+    const {email, password} = req.body;
+
+    if (password && !(await user.checkPassword(password))) {
+      return res.status(401).json({ error: 'Password does not match' });
+    }
+
+    await user.destroy();
+
+    return res.status(200).json({success: 'User deleted'});
   }
 }
 

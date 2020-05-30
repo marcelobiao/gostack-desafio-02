@@ -1,10 +1,10 @@
 import * as Yup from 'yup';
-import Users from '../models/Users';
 import bcrypt from 'bcryptjs';
+import db from '../models';
 
 class UserController{
   async index(req, res){
-    const users = await Users.findAll({
+    const users = await db.users.findAll({
       attributes: {exclude: ['password_hash']}
     });
     return res.status(200).json(users);
@@ -29,10 +29,10 @@ class UserController{
     const {name, email} = req.body;
     const password_hash = bcrypt.hashSync(req.body.password, 8);
 
-    if(await Users.findOne({where: {email: email}}))
+    if(await db.users.findOne({where: {email: email}}))
       return res.status(400).json({error: 'Email in use'});
 
-    const user = await Users.create({
+    const user = await db.users.create({
       name: name,
       email: email,
       password_hash: password_hash
@@ -60,10 +60,14 @@ class UserController{
 
     const {email, oldPassword} = req.body;
 
-    const user = await Users.findByPk(req.params.userId);
+    const user = await db.users.findByPk(req.params.userId);
+
+    if(!user){
+      return res.status(400).json({ error: 'User not existis.' });
+    }
 
     if (email && email != user.email) {
-      const userExists = await Users.findOne({ where: { email } });
+      const userExists = await db.users.findOne({ where: { email } });
 
       if (userExists) {
         return res.status(400).json({ error: 'User already Exists.' });
@@ -93,7 +97,7 @@ class UserController{
       return res.status(400).json({error: 'Validation fails'});
     }
 
-    const user = await Users.findByPk(req.params.userId);
+    const user = await db.users.findByPk(req.params.userId);
 
     if(!user){
       return res.status(401).json({error: 'User not found'})
